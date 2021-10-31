@@ -1,0 +1,50 @@
+installation de la librairie :
+
+Pré-conditions : 
+- Etre sur d'avoir la dernière version de l'OS (sudo apt-get update & sudo apt-get upgrade & raspi-update)
+- SPI activé dans les paramètres raspi (sudo raspi-config; Interface Options; P4 SPI; Oui;)
+
+Installer la librairie BCM2835 : 
+
+1. cd /home/pi
+2. wget http://www.airspayce.com/mikem/bcm2835/bcm2835-1.56.tar.gz
+3. tar -zxf bcm2835-1.56.tar.gz
+4. cd bcm2835-1.56
+5. ./configure
+6. sudo make check
+7. sudo make install
+8. cd  ..
+
+Utilitaire rc522 : 
+0. git clone https://github.com/paulvha/rfid-rc522.git
+1. cd rfid-rc522
+2. tar -zxvf rc522-1-6-5.tar.gz
+3. cd rc522
+4. ./mc                             # compile executable
+5. sudo cp RC522.conf   /etc
+6. sudo chmod 666 /etc/RC522.conf
+7. edit   /etc/RC522.conf           # if necessary
+
+Reboot
+
+Passer en root (nécessaire pour lancer le programme) : 
+
+sudo su
+cd /home/pi/rfid-rc522/rc522
+./rc522 -h (-h pas obligatoire)
+
+/!\
+Pour avoir la version de l'exploration technique récupérer les fichiers main.c et main.h sur le repo
+/!\
+
+Dans le dossier rc522, le fichier mc corresponds à la fonction de compilation (équivaut à un Makefile)
+
+Fonctions utiles dans le fichier main.c: 
+disp_card_details() --> Affiche l'id de la carte ou du badge
+set_signals() --> Prépare les signaux qui vont servir à la lecture RFID	    
+get_config_file() --> Récupère le fichier de config "rc522.conf"
+HW_init(spi_speed,gpio) --> initialise la bibliothèque BCM2835
+InitRc522() --> Initialise le lecteur RFID
+Scanner_new() --> Initialise les outils nécessaires pour la lecture (Ajoutée par Antoine dans main.c)
+Scanner_free() --> ferme et termine le programme (Ajoutée par Antoine dans main.c)
+void p_printf (int level, char *format, ...) --> imprime les messages en couleurs
